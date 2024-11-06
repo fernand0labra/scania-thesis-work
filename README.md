@@ -50,7 +50,7 @@ In this scenario, the discriminator would act as the player, trying to maximize 
 The Vector-Quantized GAN is trained to maximize the log-likelihood while imposing the prior distribution. However, the discriminator network subjects this prior by providing error gradients over the latent embedding being a correct or incorrect prior sample.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0e78e62e-0539-4c30-bd45-f6cfb1a7de69" width="500"/>
+  <img src="https://github.com/user-attachments/assets/4f78721f-1915-454d-8240-e52b184c1b8f" width="500"/>
 </p>
 
 ### About Variational Autoencoders (VAE)
@@ -64,7 +64,7 @@ In practice, (1) the learned variance is applied to the sampled noise and (2) th
 The Vector-Quantized VAE is trained to maximize the lower bound of the posterior distribution loglikelihood while constraining the encoder over a prior distribution. The training objective uses the KL divergence to impose the prior and a reconstruction error such as MSE over the original and reconstructed images to optimize the autoencoder towards the real posterior.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d7e9bdd7-8c8e-4d63-a145-c9159dd793f3" width="400"/>
+  <img src="https://github.com/user-attachments/assets/872a0d2d-d6a4-4ed3-aa2d-75cd5d24ba56" width="400"/>
 </p>
 
 ### About Gaussian Diffusion
@@ -74,7 +74,7 @@ Diffusion is a thermodynamics concept in which elements from high density areas 
 These perturbations are modelled by Markov chains with a Gaussian target distribution. The noisy sample is forwarded to an additional process of reverse diffusion (denoising) modelled by a neural network whose objective is to learn the previously applied perturbations.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/2e769973-7107-4871-b4e0-4c652bf7d9ff" width="700"/>
+  <img src="https://github.com/user-attachments/assets/560f8e6b-544f-4238-a780-f1cbee212e91" width="700"/>
 </p>
 
 ## Implementation
@@ -95,8 +95,8 @@ The dataset has been divided onto train, validation and test sets with respectiv
 
 <table>
 <tr>
-<td><img src="https://github.com/user-attachments/assets/4a760780-558c-43c2-ad9d-a9bd35430a50"/></td>
-<td><img src="https://github.com/user-attachments/assets/cab3ce47-44a9-4544-89aa-d5934ec8df67"/></td>
+<td><img src="https://github.com/user-attachments/assets/b56db771-51a0-4c5b-aa6a-004892700a90"/></td>
+<td><img src="https://github.com/user-attachments/assets/cddd9f5f-afcb-487e-a706-9057e7e514cf"/></td>
 </tr>
 <tr>
 <td>
@@ -133,5 +133,5 @@ The fixed encoder or forward diffusion, transforms the input image onto random n
 This is achieved by concatenating the conditioning embedding at different attended steps of the generation. An additional task of multimodal inference is delegated onto the generative architecture, i.e. using different types of data such as images, text or semantic maps simultaneously for the purpose of image generation.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f1dbb794-b0e4-49b6-97d5-4d60d9fdd20c" width="600"/>
+  <img src="https://github.com/user-attachments/assets/2c6a9f52-f312-4dbc-be90-5ad48ca4ecda" width="600"/>
 </p>
