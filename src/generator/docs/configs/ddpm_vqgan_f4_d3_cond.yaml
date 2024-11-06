@@ -1,0 +1,90 @@
+model:
+  base_learning_rate: 1.0e-06
+  target: generator.src.modules.diffusion.latent.LatentDiffusion
+  params:
+    linear_start: 0.0015
+    linear_end: 0.0155
+    log_every_t: 100
+    timesteps: 1000
+    loss_type: l2
+    parameterization: eps  # x0
+    first_stage_key: image
+    cond_stage_key: LR_image
+    monitor: val/loss_simple_ema
+    image_size: 64
+    channels: 3
+    concat_mode: true
+    cond_stage_trainable: false
+
+    unet_config:
+      target: generator.src.model.UNetModel
+      params:
+        image_size: 64
+        in_channels: 6
+        out_channels: 3
+        model_channels: 160
+        attention_resolutions:
+        - 16
+        - 8
+        num_res_blocks: 2
+        channel_mult:
+        - 1
+        - 2
+        - 2
+        - 4
+        num_head_channels: 32
+
+    first_stage_config:  # Working with z of shape (1, 3, 64, 64) = 12288 dimensions.
+      target: embedder.src.model.VQModelInterface
+      params:
+        # NOTE: Updating encoder-embedder keys
+        # ckpt_path: /home/ubuntu/scania-raw-diff/src/embedder/logs/checkpoints/vqgan/f4_d3/base.ckpt
+        # ckpt_path: /home/ubuntu/scania-raw-diff/src/embedder/logs/checkpoints/vqgan/f4_d3/raw_raw_r256_e10.ckpt
+        embed_dim: 3
+        n_embed: 8192
+        ddconfig:
+          double_z: false
+          z_channels: 3
+          resolution: 256
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+        lossconfig: 
+          target: torch.nn.Module
+
+    cond_stage_config: # __is_first_stage__
+      target: torch.nn.Identity
+
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 1
+    num_workers: 1
+    # train:
+    #   target: generator.src.dataloader.CustomTrain
+    #   params:
+    #     training_images_list_file: /mnt/efs/fs1/smartphone-image-denoising-dataset/cycleisp-val.txt
+    #     degradation: cv_bilinear
+    #     downscale_f: 4
+    #     size: 256
+    validation:
+      target: generator.src.dataloader.CustomVal
+      params:
+        validation_images_list_file: /mnt/efs/fs1/smartphone-image-denoising-dataset/cycleisp-val.txt
+        degradation: cv_bilinear
+        downscale_f: 4
+        size: 256
+    # test:
+    #   target: generator.src.dataloader.CustomTest
+    #   params:
+    #     test_images_list_file: /home/ubuntu/scania-raw-diff/src/generator/logs/optim/uncond/sets/val.txt
+    #     degradation: cv_bilinear
+    #     downscale_f: 4
+    #     size: 256

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Embedder Debugging",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/flau33/scania-raw-diff/embedder/main.py",
+            "console": "integratedTerminal",
+            "args": ["--resume", "/home/flau33/scania-raw-diff/src/embedder/logs/checkpoints/vqgan_imagenet_f16_1024.ckpt",
+                     "--base", "/home/flau33/scania-raw-diff/src/embedder/logs/configs/vqgan_imagenet_f16_1024.yaml",
+                     "--train", "True", "--accelerator", "gpu", "--devices", "1", "--max_epochs", "20", "--log_every_n_steps", "1"]
+        }
+    ]
+}

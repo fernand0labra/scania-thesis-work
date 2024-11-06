@@ -1,0 +1,92 @@
+model:
+  base_learning_rate: 1.0e-06
+  target: generator.src.modules.diffusion.latent.LatentDiffusion
+  params:
+    linear_start: 0.0015
+    linear_end: 0.0155
+    num_timesteps_cond: 1               # Non-effective (covered by latent.py 'default(num_timesteps_cond, 1)')
+    log_every_t: 100
+    timesteps: 1000
+    loss_type: l1
+    parameterization: eps  # x0
+    first_stage_key: "image"
+    cond_stage_key: "image"             # Non-effective (covered by latent.py '__init__ :: cond_stage_key="image"')
+    image_size: 64
+    channels: 3
+    cond_stage_trainable: False         # Non-effective (covered by latent.py '__init__ :: cond_stage_trainable=False')
+    concat_mode: False                  # Non-effective (covered by latent.py '__is_unconditional__')
+    monitor: val/loss_simple_ema
+    
+    unet_config:
+      target: generator.src.model.UNetModel
+      params:
+        image_size: 64
+        in_channels: 3
+        out_channels: 3
+        model_channels: 224
+        attention_resolutions:
+        - 8
+        - 4
+        - 2
+        num_res_blocks: 2
+        channel_mult:
+        - 1
+        - 2
+        - 3
+        - 4
+        num_head_channels: 32
+
+    first_stage_config:
+      target: embedder.src.model.VQModelInterface
+      params:
+        ckpt_path: /home/ubuntu/scania-raw-diff/src/embedder/logs/checkpoints/vqgan/f4_d3/rgb_rgb_r256_e10.ckpt
+        embed_dim: 3
+        n_embed: 8192
+        monitor: val/rec_loss
+
+        ddconfig:
+          double_z: false
+          z_channels: 3
+          resolution: 256
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+          
+        lossconfig:
+          target: torch.nn.Identity
+
+    cond_stage_config: __is_unconditional__
+
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 1
+    num_workers: 8
+    train:
+      target: generator.src.dataloader.CustomTrain
+      params:
+        training_images_list_file: /home/ubuntu/scania-raw-diff/src/generator/logs/optim/uncond/sets/train.txt
+        degradation: cv_bilinear
+        downscale_f: 4
+        size: 256
+    validation:
+      target: generator.src.dataloader.CustomVal
+      params:
+        validation_images_list_file: /home/ubuntu/scania-raw-diff/src/generator/logs/optim/uncond/sets/val.txt
+        degradation: cv_bilinear
+        downscale_f: 4
+        size: 256
+    test:
+      target: generator.src.dataloader.CustomTest
+      params:
+        test_images_list_file: /home/ubuntu/scania-raw-diff/src/generator/logs/optim/uncond/sets/val.txt
+        degradation: cv_bilinear
+        downscale_f: 4
+        size: 256

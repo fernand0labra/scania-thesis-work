@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Generator Debugging",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/ubuntu/scania-raw-diff/src/main.py",
+            "console": "integratedTerminal",
+            "args": ["--resume", "/home/ubuntu/scania-raw-diff/src/generator/logs/checkpoints/ddpm_vqgan_f8.ckpt",
+                     "--base", "/home/ubuntu/scania-raw-diff/src/generator/logs/configs/ddpm_vqgan_f8.yaml",
+                     "--train", "True", "--accelerator", "gpu", "--devices", "1", "--max_epochs", "20", "--log_every_n_steps", "1"]
+        }
+    ]
+}
